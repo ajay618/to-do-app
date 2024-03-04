@@ -61,3 +61,7 @@ li{
 #delete {
     color: red;
 }
+#list-item {
+    text-decoration: line-through;
+    opacity: 0.3;
+}

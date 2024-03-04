@@ -14,8 +14,7 @@ function ToDo() {
 
     const addToDo = () => {
         if (todo.trim() !== '') {
-            setTodos([...todos, todo]);
-            console.log(todos);
+            setTodos([...todos, { list : todo , id : Date.now() ,complete : false }]);
             setTodo('');
         }
     };
@@ -31,6 +30,21 @@ function ToDo() {
     useEffect(()=>{
         inputRef.current.focus();
     })
+
+    const onDelete = (id) => {
+        const updatedTodos = todos.filter((todo) => todo.id !== id);
+        setTodos(updatedTodos);
+    };
+
+    const statusComplete = (id) => {
+        let complete = todos.map ((todos) => {
+            if (todos.id === id ){
+                return ({...todos , complete : !todos.complete })
+            }
+            return todos 
+        })
+       setTodos(complete)
+    }
 
     return (
         <div className='container'>
@@ -51,11 +65,21 @@ function ToDo() {
                 <ul>
                     {todos.map((todo, index) => (
                         <li className='list-items' key={index}>
-                            <div className='list-item-list'> {todo}</div>  
+                            <div className='list-item-list' id= {todo.complete ? "list-item" : ''}> {todo.list}</div>  
                         <span>
-                            <IoMdDoneAll className='list-item-icons' id='complete' title='Complete'/>
+                            <IoMdDoneAll 
+                            className='list-item-icons' 
+                            id='complete' 
+                            title='Complete'
+                            onClick={() => statusComplete(todo.id)}/>
+
                             <FiEdit className='list-item-icons' id='edit' title='Edit'/>
-                            <MdDelete className='list-item-icons' id='delete' title='Delete'/>
+                            <MdDelete 
+                            className='list-item-icons' 
+                            id='delete' 
+                            title='Delete'
+                            onClick={() => onDelete(todo.id)}
+                            />
                         </span>
                         </li>
                     ))}
