@@ -7,15 +7,26 @@ import { MdDelete } from "react-icons/md";
 function ToDo() {
     const [todo, setTodo] = useState('');
     const [todos, setTodos] = useState([]);
+    const [editId , setEditId ] = useState(0);
 
     const handleSubmit = (e) => {
         e.preventDefault();
     };
 
     const addToDo = () => {
-        if (todo.trim() !== '') {
+        if (todo !== '') {
             setTodos([...todos, { list : todo , id : Date.now() ,complete : false }]);
             setTodo('');
+        }
+
+        if (editId){ 
+            const editToDo = todos.find((todo) => todo.id === editId)
+            const updateToDo = todos.map( (to) =>to.id === editToDo.id 
+            ? ( to = { id : to.id , list : todo })
+            : ( to = { id : to.id , list : to.list }))
+            setTodos(updateToDo)
+            setEditId(0)
+            setTodo('')
         }
     };
 
@@ -37,15 +48,23 @@ function ToDo() {
     };
 
     const statusComplete = (id) => {
-        let complete = todos.map ((todos) => {
+        let toDocompleteChange = todos.map ((todos) => {
             if (todos.id === id ){
                 return ({...todos , complete : !todos.complete })
             }
             return todos 
         })
-       setTodos(complete)
+       setTodos(toDocompleteChange)
     }
 
+    const EditToDo = (id) => {
+        const editTodo = todos.find((todo) => todo.id === id);
+        if (editTodo) {
+            setTodo(editTodo.list); 
+            setEditId(editTodo.id)
+        }
+    };
+    
     return (
         <div className='container'>
             <h2>TODO APP</h2>
@@ -59,7 +78,7 @@ function ToDo() {
                     onChange={(event) => setTodo(event.target.value)}
                     onKeyPress={handleKeyPress}
                 />
-                <button type="button" onClick={addToDo}>ADD</button>
+                <button type="button" onClick={addToDo}>{ editId ? 'EDIT' : 'ADD' }</button>
             </form>
             <div className='list'>
                 <ul>
@@ -73,7 +92,12 @@ function ToDo() {
                             title='Complete'
                             onClick={() => statusComplete(todo.id)}/>
 
-                            <FiEdit className='list-item-icons' id='edit' title='Edit'/>
+                            <FiEdit 
+                            className='list-item-icons' 
+                            id='edit' 
+                            title='Edit'
+                            onClick={() => EditToDo(todo.id)}/>
+
                             <MdDelete 
                             className='list-item-icons' 
                             id='delete' 
