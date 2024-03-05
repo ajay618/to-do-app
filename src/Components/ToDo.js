@@ -22,8 +22,8 @@ function ToDo() {
         if (editId){ 
             const editToDo = todos.find((todo) => todo.id === editId)
             const updateToDo = todos.map( (to) =>to.id === editToDo.id 
-            ? ( to = { id : to.id , list : todo })
-            : ( to = { id : to.id , list : to.list }))
+            ? ( to = { id : to.id , list : todo , complete : to.complete })
+            : ( to = { id : to.id , list : to.list , complete : to.complete  }))
             setTodos(updateToDo)
             setEditId(0)
             setTodo('')
